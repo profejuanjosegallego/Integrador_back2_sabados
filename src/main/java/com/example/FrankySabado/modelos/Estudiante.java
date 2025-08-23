@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "estudiantes")
@@ -22,6 +23,14 @@ public class Estudiante {
     @JoinColumn(name = "fk_usuario", referencedColumnName = "id")
     @JsonManagedReference(value = "relacionestudianteusuario")
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "estudiante")
+    @JsonManagedReference(value = "relacionestudianteasistencia")
+    private ArrayList<Asistencia> asistencias;
+
+    @OneToMany(mappedBy = "estudiante")
+    @JsonManagedReference(value="relacionestudiantenota")
+    private ArrayList<Nota> notas;
 
     public Estudiante() {
     }

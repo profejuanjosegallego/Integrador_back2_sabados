@@ -1,6 +1,7 @@
 package com.example.FrankySabado.modelos;
 
 import com.example.FrankySabado.ayudas.EstadosAsistencia;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -19,6 +20,11 @@ public class Asistencia {
     @Column(name = "estado", nullable = false, unique = false)
     @Enumerated(EnumType.STRING)
     private EstadosAsistencia estado;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_estudiante", referencedColumnName = "id")
+    @JsonBackReference(value = "relacionestudianteasistencia")
+    private Estudiante estudiante;
 
     public Asistencia() {
     }
