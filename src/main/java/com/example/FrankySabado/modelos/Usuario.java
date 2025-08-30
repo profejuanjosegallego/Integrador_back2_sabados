@@ -3,7 +3,10 @@ package com.example.FrankySabado.modelos;
 import com.example.FrankySabado.ayudas.Estados;
 import com.example.FrankySabado.ayudas.Roles;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "usuarios")
@@ -34,6 +37,10 @@ public class Usuario {
     @OneToOne(mappedBy = "usuario")
     @JsonBackReference(value="relacionempresariousuario")
     private Empresario empresario;
+
+    @OneToOne(mappedBy = "usuario")
+    @JsonManagedReference(value = "relacionfamiliarusuario")
+    private Familiar familiar;
 
     public Usuario() {
 
