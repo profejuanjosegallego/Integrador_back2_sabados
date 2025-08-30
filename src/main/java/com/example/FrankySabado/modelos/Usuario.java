@@ -11,6 +11,7 @@ import java.util.ArrayList;
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -37,6 +38,10 @@ public class Usuario {
     @OneToOne(mappedBy = "usuario")
     @JsonBackReference(value="relacionempresariousuario")
     private Empresario empresario;
+
+    @OneToOne(mappedBy = "usuario")
+    @JsonBackReference(value = "relaciondocenteousuario")
+    private Docente docente;
 
     @OneToOne(mappedBy = "usuario")
     @JsonManagedReference(value = "relacionfamiliarusuario")
