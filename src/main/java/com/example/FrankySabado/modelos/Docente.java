@@ -32,6 +32,11 @@ public class Docente {
     @JsonManagedReference(value = "relaciondocenteousuario")
     private Usuario usuario;
 
+    @OneToOne
+    @JoinColumn(name = "fk_duber", referencedColumnName = "id")
+    @JsonManagedReference(value = "relacionduberdocente")
+    private TablaDuberMonsalve tablaDuberMonsalve;
+
 
     public Docente() {
 
