@@ -11,7 +11,7 @@ public class TablaValentina {
     @Column(length = 50, nullable = false)
     private String nombre;
 
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     private String direccion;
 
     public TablaValentina() {
