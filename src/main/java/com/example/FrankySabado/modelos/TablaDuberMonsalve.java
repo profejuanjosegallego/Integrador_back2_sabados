@@ -1,5 +1,6 @@
 package com.example.FrankySabado.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -13,10 +14,9 @@ public class TablaDuberMonsalve {
     private String nombre;
     private String direccion;
 
-    @OneToOne
-    @JoinColumn(name = "fk_juanjose", referencedColumnName = "id")
-    @JsonManagedReference(value = "juanjoseduberandres")
-    private TablaJuanJoseVilla tablaJuanJoseVilla;
+    @OneToOne(mappedBy = "tabladubermonsalve")
+    @JsonBackReference(value = "relacionduberdocente")
+    private Docente docente;
 
     public TablaDuberMonsalve() {
     }
