@@ -1,5 +1,6 @@
 package com.example.FrankySabado.modelos;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
@@ -31,6 +32,10 @@ public class Estudiante {
     @OneToMany(mappedBy = "estudiante")
     @JsonManagedReference(value="relacionestudiantenota")
     private ArrayList<Nota> notas;
+
+    @OneToOne
+    @JsonBackReference(value = "relacionperfilestudiante_estudiante")
+    private PerfilEstudiante perfil_estudiante;
 
     public Estudiante() {
     }
