@@ -1,5 +1,6 @@
 package com.example.FrankySabado.servicios;
 
+import com.example.FrankySabado.ayudas.MensajeError;
 import com.example.FrankySabado.modelos.Usuario;
 import com.example.FrankySabado.modelos.dtos.UsuarioGenericoDTO;
 import com.example.FrankySabado.modelos.mapas.IMapaUsuario;
@@ -29,7 +30,7 @@ public class UsuarioServicio {
             //Quiero intentar guardar el usuario
             return this.mapa.convertir_a_dto(this.repositorio.save(datosUsuario));
         }catch(Exception error){
-            throw new Exception("Upsss fallamos "+error.getMessage());
+            throw new Exception(MensajeError.ERROR_GENERAL_API.getDescripcion() +error.getMessage());
         }
     }
 
@@ -40,10 +41,10 @@ public class UsuarioServicio {
             if(usuarioEncontrado.isPresent()){ //Lo encontre
                 return this.mapa.convertir_a_dto(usuarioEncontrado.get());
             }else{ //No lo encontre
-                throw new Exception("Usuario no encontrado en la base de datos");
+                throw new Exception(MensajeError.USUARIO_NO_ENCONTRADO.getDescripcion());
             }
         }catch(Exception error){
-            throw new Exception("Error"+error.getMessage());
+            throw new Exception(MensajeError.ERROR_GENERAL_API.getDescripcion()+error.getMessage());
         }
     }
 
@@ -54,10 +55,10 @@ public class UsuarioServicio {
             if(usuarioEncontrado.isPresent()){ //Lo encontre
                 return this.mapa.convertir_a_dto(usuarioEncontrado.get());
             }else{ //No lo encontre
-                throw new Exception("Usuario no encontrado en la base de datos");
+                throw new Exception(MensajeError.USUARIO_NO_ENCONTRADO.getDescripcion());
             }
         }catch(Exception error){
-            throw new Exception("Error"+error.getMessage());
+            throw new Exception(MensajeError.ERROR_GENERAL_API.getDescripcion()+error.getMessage());
         }
     }
 
@@ -66,7 +67,7 @@ public class UsuarioServicio {
         try{
             return this.mapa.convertir_lista_a_dto(this.repositorio.findAll());
         }catch(Exception error){
-            throw new Exception("Error"+error.getMessage());
+            throw new Exception(MensajeError.ERROR_GENERAL_API.getDescripcion()+error.getMessage());
         }
     }
 
@@ -75,7 +76,7 @@ public class UsuarioServicio {
         try{
             return this.mapa.convertir_lista_a_dto(this.repositorio.findByNombre(nombre));
         }catch(Exception error){
-            throw new Exception("Error"+error.getMessage());
+            throw new Exception(MensajeError.ERROR_GENERAL_API.getDescripcion()+error.getMessage());
         }
     }
 
