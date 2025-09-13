@@ -14,7 +14,7 @@ public interface IMapaEstudiante {
     @Mapping(source = "usuario.rol", target = "rol")
     EstudianteDTO convertirModeloADto(Estudiante estudiante);
 
-    //Mapeo de Listas
+    //Mapeo de Listas //ojo aca
     List<EstudianteDTO> convertirListaADto(List<Estudiante> lista);
 
 
