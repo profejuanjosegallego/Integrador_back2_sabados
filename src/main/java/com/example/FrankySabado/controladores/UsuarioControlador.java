@@ -5,10 +5,7 @@ import com.example.FrankySabado.servicios.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/usuarios") //ACA BAUTIZO EL SERVICIO(API)
@@ -34,9 +31,36 @@ public class UsuarioControlador {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(error.getMessage());
-
         }
-
     }
+
+    @GetMapping
+    public ResponseEntity<?>activarPeticionBuscarTodos(){
+        try{
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(this.servicio.buscarTodosLosUsuarios());
+        }catch(Exception error){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error.getMessage());
+        }
+    }
+
+    //3. Activando el servicio para buscar usuario por ID
+    @GetMapping("/{id}")
+    public ResponseEntity<?> activarPeticionBuscarPorId(@PathVariable Integer id){
+        try{
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(this.servicio.buscarUsuarioPorId(id));
+        }catch(Exception error){
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error.getMessage());
+        }
+    }
+
+
 
 }
