@@ -35,18 +35,6 @@ public class Usuario {
     @JsonBackReference(value = "relacionestudianteusuario")
     private Estudiante estudiante;
 
-    @OneToOne(mappedBy = "usuario")
-    @JsonBackReference(value="relacionempresariousuario")
-    private Empresario empresario;
-
-    @OneToOne(mappedBy = "usuario")
-    @JsonBackReference(value = "relaciondocenteousuario")
-    private Docente docente;
-
-    @OneToOne(mappedBy = "usuario")
-    @JsonManagedReference(value = "relacionfamiliarusuario")
-    private Familiar familiar;
-
     public Usuario() {
 
     }
@@ -106,5 +94,13 @@ public class Usuario {
 
     public void setEstado(Estados estado) {
         this.estado = estado;
+    }
+
+    public Estudiante getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(Estudiante estudiante) {
+        this.estudiante = estudiante;
     }
 }

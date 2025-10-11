@@ -28,9 +28,7 @@ public class Estudiante {
     @JsonManagedReference(value = "relacionestudianteasistencia")
     private ArrayList<Asistencia> asistencias;
 
-    @OneToMany(mappedBy = "estudiante")
-    @JsonManagedReference(value="relacionestudiantenota")
-    private ArrayList<Nota> notas;
+
 
     public Estudiante() {
     }
@@ -63,5 +61,21 @@ public class Estudiante {
 
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public ArrayList<Asistencia> getAsistencias() {
+        return asistencias;
+    }
+
+    public void setAsistencias(ArrayList<Asistencia> asistencias) {
+        this.asistencias = asistencias;
     }
 }

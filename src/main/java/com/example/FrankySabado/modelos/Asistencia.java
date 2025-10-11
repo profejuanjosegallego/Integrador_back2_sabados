@@ -67,4 +67,13 @@ public class Asistencia {
     public void setEstado(EstadosAsistencia estado) {
         this.estado = estado;
     }
+
+
+    public Estudiante getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(Estudiante estudiante) {
+        this.estudiante = estudiante;
+    }
 }
