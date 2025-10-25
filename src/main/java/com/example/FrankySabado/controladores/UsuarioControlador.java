@@ -6,9 +6,11 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -114,7 +116,25 @@ public ResponseEntity<?> activarPeticionBuscarPorCorreo(@PathVariable String cor
     }
 }
 
+// Actualizar usuario
+@PutMapping("/{id}")
+public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuario datos) {
+    try {
+        return ResponseEntity.status(HttpStatus.OK).body(servicio.actualizarUsuario(id, datos));
+    } catch (Exception error) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
+    }
+}
 
+// Eliminar usuario
+@DeleteMapping("/{id}")
+public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
+    try {
+        return ResponseEntity.status(HttpStatus.OK).body(servicio.eliminarUsuario(id));
+    } catch (Exception error) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
+    }
+}
 
 
 }

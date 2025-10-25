@@ -111,4 +111,59 @@ public class UsuarioServicio {
             throw new Exception("Correo no registrado");
         }
     }
+
+    // Servicio para actualizar usuario
+public UsuarioGenericoDTO actualizarUsuario(Integer id, Usuario datosUsuario) throws Exception {
+    // Validar que el usuario a actualizar existe
+    Optional<Usuario> usuarioExistente = repositorio.findById(id);
+    if (!usuarioExistente.isPresent()) {
+        throw new Exception("Usuario no encontrado con ID: " + id);
+    }
+
+    Usuario usuarioActual = usuarioExistente.get();
+
+    // Validar que el correo no esté siendo usado por otro usuario
+    Optional<Usuario> usuarioConCorreo = repositorio.findByCorreo(datosUsuario.getCorreo());
+    if (usuarioConCorreo.isPresent() && !usuarioConCorreo.get().getId().equals(id)) {
+        throw new Exception("El correo ya está registrado por otro usuario.");
+    }
+
+    // Validar longitud de contraseña (solo si se envía una nueva)
+    if (datosUsuario.getContraseña() != null && !datosUsuario.getContraseña().isEmpty()) {
+        if (datosUsuario.getContraseña().length() < 6) {
+            throw new Exception("La contraseña debe tener al menos 6 caracteres.");
+        }
+        usuarioActual.setContraseña(datosUsuario.getContraseña());
+    }
+
+    // Actualizar solo los campos permitidos
+    usuarioActual.setNombre(datosUsuario.getNombre());
+    usuarioActual.setCorreo(datosUsuario.getCorreo());
+    if (datosUsuario.getRol() != null) usuarioActual.setRol(datosUsuario.getRol());
+    if (datosUsuario.getEstado() != null) usuarioActual.setEstado(datosUsuario.getEstado());
+
+    try {
+        return this.mapa.convertir_a_dto(this.repositorio.save(usuarioActual));
+    } catch (Exception error) {
+        throw new Exception("Error al actualizar usuario: " + error.getMessage());
+    }
+}
+ 
+// Servicio para eliminar usuario
+public String eliminarUsuario(Integer id) throws Exception {
+    // Verificar que el usuario existe
+    Optional<Usuario> usuarioOpt = repositorio.findById(id);
+    if (!usuarioOpt.isPresent()) {
+        throw new Exception("Usuario no encontrado con ID: " + id);
+    }
+    
+    try {
+        repositorio.deleteById(id);
+        return "Usuario eliminado correctamente";
+    } catch (Exception error) {
+        throw new Exception("Error al eliminar usuario: " + error.getMessage());
+    }
+}
+
+
 }
