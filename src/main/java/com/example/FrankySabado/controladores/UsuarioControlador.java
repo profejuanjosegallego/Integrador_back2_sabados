@@ -21,59 +21,29 @@ import com.example.FrankySabado.modelos.dtos.LoginResponseDTO;
 import com.example.FrankySabado.servicios.UsuarioServicio;
 
 @RestController
-@RequestMapping("/usuarios") //ACA BAUTIZO EL SERVICIO(API)
+@RequestMapping("/usuarios")
 public class UsuarioControlador {
 
-    //Llamar al servicio
-    //Inyectar la dependencia al servicio
     @Autowired
     UsuarioServicio servicio;
 
-    //En el controlador activo la recepcion
-    //y el envio de respuestas hacia el cliente
-    //por cada funcion que tenga en mi servicio
+    // ========== REGISTRO ==========
 
-    //1.Activando el API para guardar 1 usuario
     @PostMapping
-    public ResponseEntity<?>activarPeticionGuardar(@RequestBody Usuario datos){
-        try{
+    public ResponseEntity<?> activarPeticionGuardar(@RequestBody Usuario datos) {
+        try {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(this.servicio.guardarUsuarioGenerico(datos));
-        }catch (Exception error){
+        } catch (Exception error) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(error.getMessage());
         }
     }
 
-    @GetMapping
-    public ResponseEntity<?>activarPeticionBuscarTodos(){
-        try{
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(this.servicio.buscarTodosLosUsuarios());
-        }catch(Exception error){
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(error.getMessage());
-        }
-    }
+    // ========== LOGIN ==========
 
-    //3. Activando el servicio para buscar usuario por ID
-    @GetMapping("/{id}")
-    public ResponseEntity<?> activarPeticionBuscarPorId(@PathVariable Integer id){
-        try{
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(this.servicio.buscarUsuarioPorId(id));
-        }catch(Exception error){
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(error.getMessage());
-        }
-    }
-    
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
         try {
@@ -84,31 +54,51 @@ public class UsuarioControlador {
         }
     }
 
-
-    @RestController
-@RequestMapping("/dashboard")
-public class DashboardControlador {
+    // ========== CONSULTAS ==========
 
     @GetMapping
-    public ResponseEntity<?> obtenerDatosDashboard() {
-        // Aquí puedes agregar la lógica real de consulta (por ahora valores mock)
-        Map<String, Object> datos = new HashMap<>();
-        datos.put("totalEstudiantes", 245);
-        datos.put("asistenciaMensual", "92%");
-        datos.put("rendimiento", "78%");
-        datos.put("pendientes", 12);
-        // Puedes agregar más datos o sumar datos específicos por rol
-
-        return ResponseEntity.ok(datos);
+    public ResponseEntity<?> activarPeticionBuscarTodos() {
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(this.servicio.buscarTodosLosUsuarios());
+        } catch (Exception error) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error.getMessage());
+        }
     }
-}
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> activarPeticionBuscarPorId(@PathVariable Integer id) {
+        try {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(this.servicio.buscarUsuarioPorId(id));
+        } catch (Exception error) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(error.getMessage());
+        }
+    }
 
 @GetMapping("/correo/{correo}")
 public ResponseEntity<?> activarPeticionBuscarPorCorreo(@PathVariable String correo) {
     try {
+        // Llamar al NUEVO método que devuelve Usuario completo
+        Usuario usuario = this.servicio.buscarUsuarioCompletoPorCorreo(correo);
+        
+        // Construir respuesta con ID incluido
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", usuario.getId());
+        response.put("nombre", usuario.getNombre());
+        response.put("correo", usuario.getCorreo());
+        response.put("rol", usuario.getRol().toString());
+        response.put("estado", usuario.getEstado().toString());
+        
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(this.servicio.buscarUsuarioPorCorreo(correo));
+                .body(response);
     } catch (Exception error) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -116,25 +106,88 @@ public ResponseEntity<?> activarPeticionBuscarPorCorreo(@PathVariable String cor
     }
 }
 
-// Actualizar usuario
-@PutMapping("/{id}")
-public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuario datos) {
-    try {
-        return ResponseEntity.status(HttpStatus.OK).body(servicio.actualizarUsuario(id, datos));
-    } catch (Exception error) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
+
+
+    // ========== ACTUALIZACIÓN Y ELIMINACIÓN BÁSICA (DEPRECADAS - Usar endpoints específicos de admin o perfil) ==========
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuario datos) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.actualizarUsuario(id, datos));
+        } catch (Exception error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
+        }
     }
-}
 
-// Eliminar usuario
-@DeleteMapping("/{id}")
-public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
-    try {
-        return ResponseEntity.status(HttpStatus.OK).body(servicio.eliminarUsuario(id));
-    } catch (Exception error) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.eliminarUsuario(id));
+        } catch (Exception error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
+        }
     }
-}
 
+    // ========== ADMIN: EDITAR CUALQUIER USUARIO ==========
 
+    @PutMapping("/admin/{idAdmin}/usuarios/{id}")
+    public ResponseEntity<?> actualizarUsuarioComoAdmin(
+            @PathVariable Integer idAdmin,
+            @PathVariable Integer id,
+            @RequestBody Usuario datos) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(servicio.actualizarUsuarioComoAdmin(idAdmin, id, datos));
+        } catch (Exception error) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.getMessage());
+        }
+    }
+
+    // ========== ADMIN: ELIMINAR CUALQUIER USUARIO ==========
+
+    @DeleteMapping("/admin/{idAdmin}/usuarios/{id}")
+    public ResponseEntity<?> eliminarUsuarioComoAdmin(
+            @PathVariable Integer idAdmin,
+            @PathVariable Integer id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(servicio.eliminarUsuarioComoAdmin(idAdmin, id));
+        } catch (Exception error) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(error.getMessage());
+        }
+    }
+
+    // ========== USUARIO: EDITAR SU PROPIO PERFIL ==========
+
+    @PutMapping("/{id}/perfil")
+    public ResponseEntity<?> actualizarPropioUsuario(
+            @PathVariable Integer id,
+            @RequestBody Usuario datos) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(servicio.actualizarPropioUsuario(id, datos));
+        } catch (Exception error) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(error.getMessage());
+        }
+    }
+
+    // ========== DASHBOARD (CONTROLADOR ANIDADO) ==========
+
+    @RestController
+    @RequestMapping("/dashboard")
+    public class DashboardControlador {
+
+        @GetMapping
+        public ResponseEntity<?> obtenerDatosDashboard() {
+            Map<String, Object> datos = new HashMap<>();
+            datos.put("totalEstudiantes", 245);
+            datos.put("asistenciaMensual", "92%");
+            datos.put("rendimiento", "78%");
+            datos.put("pendientes", 12);
+            return ResponseEntity.ok(datos);
+        }
+    }
 }
