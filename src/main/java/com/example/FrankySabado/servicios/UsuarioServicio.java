@@ -188,10 +188,11 @@ public String eliminarUsuario(Integer id) throws Exception {
 
 // ========== MÉTODOS AUXILIARES ==========
     
-    private boolean esAdministrador(Integer idUsuario) throws Exception {
+    private boolean esAdministradorODocente(Integer idUsuario) throws Exception {
         Optional<Usuario> usuario = repositorio.findById(idUsuario);
         if (usuario.isPresent()) {
-            return usuario.get().getRol() == Roles.Administrador;
+            Roles rol = usuario.get().getRol();
+            return rol == Roles.Administrador || rol == Roles.Docente;
         }
         throw new Exception("Usuario no encontrado");
     }
@@ -199,7 +200,7 @@ public String eliminarUsuario(Integer id) throws Exception {
     // ========== ADMIN: EDITAR CUALQUIER USUARIO ==========
     
     public UsuarioGenericoDTO actualizarUsuarioComoAdmin(Integer idAdmin, Integer idUsuarioAActualizar, Usuario datosUsuario) throws Exception {
-        if (!esAdministrador(idAdmin)) {
+        if (!esAdministradorODocente(idAdmin)) {
             throw new Exception("No tienes permisos. Se requiere rol de Administrador.");
         }
         return actualizarUsuario(idUsuarioAActualizar, datosUsuario);
@@ -208,7 +209,7 @@ public String eliminarUsuario(Integer id) throws Exception {
     // ========== ADMIN: ELIMINAR CUALQUIER USUARIO ==========
     
     public String eliminarUsuarioComoAdmin(Integer idAdmin, Integer idUsuarioAEliminar) throws Exception {
-        if (!esAdministrador(idAdmin)) {
+        if (!esAdministradorODocente(idAdmin)) {
             throw new Exception("No tienes permisos. Se requiere rol de Administrador.");
         }
         return eliminarUsuario(idUsuarioAEliminar);
